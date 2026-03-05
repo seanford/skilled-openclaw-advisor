@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Runtime data — lives in skills-data/<skill-name>/, NOT in the skill repo
+# See SKILLS_DATA_CONVENTION.md for the standard
+../../skills-data/
+
+# If someone accidentally runs build_index.py from inside the skill dir
+*.db
+*.sqlite
+*.sqlite3
+state.json
+diffs/
+versions/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
