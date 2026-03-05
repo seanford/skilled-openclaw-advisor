@@ -12,9 +12,19 @@ import time
 from datetime import datetime
 
 # --- Constants ---
-CONFIG_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills/openclaw-docs/config.json")
+# No separate config.json — all settings live in openclaw.json under:
+#   skills.entries.skilled-openclaw-advisor.config
+OPENCLAW_JSON_PATH = os.path.expanduser("~/.openclaw/openclaw.json")
 STATE_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/state.json")
 DB_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/index.db")
+
+# ---------------------------------------------------------------------------
+# DEFAULTS — change these to adjust out-of-the-box behaviour.
+# ---------------------------------------------------------------------------
+DEFAULTS = {
+    "docsPath": None,   # Auto-detected if not set
+}
+# ---------------------------------------------------------------------------
 
 
 def load_json(path):
@@ -34,10 +44,20 @@ def save_json(path, data):
         f.write("\n")
 
 
+def load_oc_config():
+    """Load skill config from openclaw.json. Falls back to DEFAULTS."""
+    try:
+        with open(OPENCLAW_JSON_PATH, "r") as f:
+            oc_json = json.load(f)
+        return oc_json.get("skills", {}).get("entries", {}).get("skilled-openclaw-advisor", {}).get("config", {})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
 def detect_docs_path(config):
     """Detect the OpenClaw docs directory. Tries multiple strategies in order."""
 
-    # a) Check config.json docsPath
+    # a) Check openclaw.json skill config docsPath
     configured = config.get("docsPath")
     if configured and os.path.isdir(configured):
         return configured
@@ -303,12 +323,11 @@ def main():
     start = time.time()
 
     # Load existing config and state
-    config = load_json(CONFIG_PATH)
+    config = {**DEFAULTS, **load_oc_config()}
     state = load_json(STATE_PATH)
 
     # Step 1: Detect docs path
     docs_path = detect_docs_path(config)
-    config["docsPath"] = docs_path
     state["docsPath"] = docs_path
 
     # Step 2: Build the index
@@ -316,12 +335,10 @@ def main():
 
     # Step 3: Get version
     version = get_openclaw_version()
-    config["indexedVersion"] = version
     state["indexedVersion"] = version
 
-    # Step 4: Update timestamps and write files
+    # Step 4: Update timestamps and write state only (config lives in openclaw.json)
     state["lastCheck"] = datetime.utcnow().isoformat() + "Z"
-    save_json(CONFIG_PATH, config)
     save_json(STATE_PATH, state)
 
     # Step 5: Summary

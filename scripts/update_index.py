@@ -23,7 +23,9 @@ from datetime import datetime, timezone
 # Constants
 # ---------------------------------------------------------------------------
 
-CONFIG_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills/openclaw-docs/config.json")
+# No separate config.json — all settings live in openclaw.json under:
+#   skills.entries.skilled-openclaw-advisor.config
+OPENCLAW_JSON_PATH = os.path.expanduser("~/.openclaw/openclaw.json")
 STATE_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/state.json")
 DB_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/index.db")
 DIFFS_DIR = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/diffs")
@@ -49,6 +51,16 @@ def load_json(path):
         return {}
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_oc_config():
+    """Load skill config from openclaw.json. Returns {} on failure."""
+    try:
+        with open(OPENCLAW_JSON_PATH, "r", encoding="utf-8") as f:
+            oc_json = json.load(f)
+        return oc_json.get("skills", {}).get("entries", {}).get("skilled-openclaw-advisor", {}).get("config", {})
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
 
 
 def save_json(path, data):
@@ -157,13 +169,15 @@ def main():
     # ------------------------------------------------------------------
     # Step 1: Load config + state
     # ------------------------------------------------------------------
-    config = load_json(CONFIG_PATH)
+    config = load_oc_config()
     state = load_json(STATE_PATH)
 
-    docs_path = config.get("docsPath", "")
+    # docsPath: prefer openclaw.json config, fall back to state.json (set by build_index.py)
+    docs_path = config.get("docsPath") or state.get("docsPath", "")
     if not docs_path or not os.path.isdir(docs_path):
         print(f"Error: docsPath not set or does not exist: {docs_path!r}")
-        print(f"Check {CONFIG_PATH}")
+        print(f"Set docsPath in skills.entries.skilled-openclaw-advisor.config in openclaw.json,")
+        print(f"or run build_index.py first to auto-detect and cache it in state.json.")
         sys.exit(1)
 
     # ------------------------------------------------------------------
@@ -331,14 +345,11 @@ def main():
     except (FileNotFoundError, subprocess.TimeoutExpired) as e:
         print(f"Warning: Could not send Telegram notification: {e}")
 
-    # 6e. Update state.json and config.json
+    # 6e. Update state.json only (config lives in openclaw.json)
     state["indexedVersion"] = current_version
     state["lastCheck"] = utcnow_iso()
     state["lastDiff"] = diff_file
     save_json(STATE_PATH, state)
-
-    config["indexedVersion"] = current_version
-    save_json(CONFIG_PATH, config)
 
     # 6f. Clean up PREV_DOCS_DIR, then snapshot current docs for next run
     shutil.rmtree(PREV_DOCS_DIR, ignore_errors=True)

@@ -10,7 +10,7 @@ import sys
 
 # ---------------------------------------------------------------------------
 # DEFAULTS — change these to adjust out-of-the-box behaviour.
-# All can be overridden via skills.entries.openclaw-docs.config in openclaw.json.
+# All can be overridden via skills.entries.skilled-openclaw-advisor.config in openclaw.json.
 # ---------------------------------------------------------------------------
 DEFAULTS = {
     "defaultLang":        "en",       # Language filter: "en" or "zh-CN"
@@ -42,7 +42,7 @@ def load_config():
             oc_json
             .get("skills", {})
             .get("entries", {})
-            .get("openclaw-docs", {})
+            .get("skilled-openclaw-advisor", {})
             .get("config", {})
         )
     except (FileNotFoundError, json.JSONDecodeError):
