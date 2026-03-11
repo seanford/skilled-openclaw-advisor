@@ -4,108 +4,112 @@ description: >
   Query the local OpenClaw docs index for accurate answers about configuration,
   features, CLI commands, channels, providers, plugins, cron, sessions, agents,
   protocol, and troubleshooting. Faster and more accurate than relying on training
-  data. Zero API calls, sub-10ms queries. Use for: "how do I", "openclaw",
-  "configure", "gateway", "channel", "cron", "provider", "plugin", "session",
-  "heartbeat", "protocol", "websocket", "skill", "model", "agent".
-metadata: {"openclaw": {"emoji": "📚", "skillKey": "skilled-openclaw-advisor"}, "acceptLicenseTerms": true}
+  data for OpenClaw specifics. Zero API calls, sub-10ms queries. Useful for:
+  openclaw, configure, gateway, channel, cron, provider, plugin, session,
+  heartbeat, protocol, skill, model, agent questions.
+metadata: {
+  "openclaw": {
+    "emoji": "📚",
+    "skillKey": "skilled-openclaw-advisor",
+    "requires": {
+      "bins": ["python3"]
+    },
+    "install": [
+      {
+        "id": "build-index",
+        "kind": "exec",
+        "command": "python3 $SKILL_DIR/scripts/build_index.py",
+        "label": "Build local OpenClaw docs index (reads from local OpenClaw install only)"
+      }
+    ]
+  },
+  "acceptLicenseTerms": true
+}
 ---
 
 # OpenClaw Docs Intelligence
 
 Local FTS5 index of all OpenClaw documentation. Zero API calls. Sub-10ms queries.
 
-## Usage
+## What This Skill Does
 
-Query this index for OpenClaw-specific questions. The local docs index is more
-accurate and up to date than general training data for OpenClaw specifics.
-Use `--mode agent` for internal lookups to keep token usage minimal.
+This skill bundles three Python scripts and queries a local SQLite FTS5 index
+built from the OpenClaw docs installed on this machine
+(`~/.npm-global/lib/node_modules/openclaw/docs` or equivalent). It reads only
+the local docs directory and writes only to `~/.openclaw/skills-data/skilled-openclaw-advisor/`.
+It does not make network requests, does not access credentials or config secrets,
+and does not read `openclaw.json` at runtime (config keys listed below are optional
+overrides that the user may set — they are not required).
 
-## Setup
+## First-Time Setup
 
-Set `$SKILL_DIR` to the skill install location before running scripts:
+Build the index after installing the skill:
+
 ```bash
-export SKILL_DIR="$(openclaw skills path skilled-openclaw-advisor 2>/dev/null || echo ~/.openclaw/workspace/skills/openclaw-docs)"
+python3 $SKILL_DIR/scripts/build_index.py
 ```
 
-## Quick Query
+This scans the local OpenClaw docs and creates a SQLite index at
+`~/.openclaw/skills-data/skilled-openclaw-advisor/index.db`.
+
+## Query
 
 ```bash
-# Agent internal lookup (use this by default)
-python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --mode agent
+# Compact output for agent use
+python3 $SKILL_DIR/scripts/query_index.py --query "YOUR QUESTION" --mode agent
 
-# Human-readable (standard verbosity, English default)
-python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION"
+# Human-readable
+python3 $SKILL_DIR/scripts/query_index.py --query "YOUR QUESTION"
+
+# Full detail with online link
+python3 $SKILL_DIR/scripts/query_index.py --query "YOUR QUESTION" --verbosity detailed
 
 # Chinese results
-python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --lang zh-CN
-
-# More detail
-python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --mode agent --verbosity standard
-
-# Full excerpt + online link
-python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --verbosity detailed
-```
-
-## Language Support
-
-Results default to **English** (`--lang en`). Pass `--lang zh-CN` for Chinese.
-Default is controlled by `defaultLang` in `skills.entries.openclaw-docs.config`
-in `openclaw.json`. Falls back to English automatically if no results found.
-
-## Index Management
-
-```bash
-# First-time setup (auto-detects docs path)
-python3 "$(dirname "$0")/../scripts/build_index.py
-
-# Check for updates (runs nightly at 5:30am)
-python3 "$(dirname "$0")/../scripts/update_index.py
-
-# Force full re-index
-python3 "$(dirname "$0")/../scripts/build_index.py --force
+python3 $SKILL_DIR/scripts/query_index.py --query "YOUR QUESTION" --lang zh-CN
 
 # Index status
-python3 "$(dirname "$0")/../scripts/query_index.py --status
-
-# Latest diff (what changed in last update)
-python3 "$(dirname "$0")/../scripts/query_index.py --diff
+python3 $SKILL_DIR/scripts/query_index.py --status
 ```
 
-## When to Use This
+## Index Updates
 
-- **Any** OpenClaw question — config keys, features, CLI commands, architecture
-- "How do I configure X in OpenClaw?"
-- "What does Y provider setting do?"
-- "How does Z channel/cron/session work?"
-- Troubleshooting OpenClaw errors or unexpected behavior
+```bash
+# Incremental update (checks for doc changes)
+python3 $SKILL_DIR/scripts/update_index.py
 
-## When NOT to Use This
+# Force full re-index
+python3 $SKILL_DIR/scripts/build_index.py --force
+```
+
+## When to Use
+
+- OpenClaw configuration questions
+- CLI commands and options
+- Channel, provider, cron, session, agent setup
+- Troubleshooting OpenClaw errors
+
+## When Not to Use
 
 - General coding questions unrelated to OpenClaw
-- Questions about third-party services not documented here
-- If index is not built (run `build_index.py` first — check with `--status`)
+- Questions about third-party services
+- If index is not built yet (run `build_index.py` first)
 
 ## Response Modes
 
-| Mode | Default For | Description |
-|------|-------------|-------------|
+| Mode | Use Case | Description |
+|------|----------|-------------|
+| `agent` | Default agent queries | Ultra-compact, minimal tokens |
 | `human` + `standard` | Human questions | Clear explanation + key points |
-| `human` + `concise` | Quick lookups | Title + one-liner + path |
 | `human` + `detailed` | Deep dives | Full excerpt + examples |
-| `agent` | Agent queries | Ultra-compact, minimal tokens |
-| `agent` + `standard` | Agent needs context | Slightly expanded for decisions |
 
-## Config Reference
+## Optional Config
 
-All settings live in `skills.entries.openclaw-docs.config` in `openclaw.json`.
-Defaults are hardcoded at the top of `scripts/query_index.py`.
+Settings in `skills.entries.openclaw-docs.config` in `openclaw.json` (all optional):
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `defaultLang` | `"en"` | Language filter: `en` or `zh-CN` |
-| `defaultVerbosity` | `"standard"` | Output verbosity: `concise`, `standard`, `detailed` |
-| `mandatoryQueryFirst` | `false` | Emit suggestion to query docs before answering OpenClaw questions |
-| `maxResults` | `5` | Max results returned (agent mode caps at `min(3, maxResults)`) |
-| `agentMode` | `false` | Always use compact agent output regardless of `--mode` flag |
-| `fallbackToEnglish` | `true` | Fall back to English if requested language has no results |
+| `defaultLang` | `"en"` | Language: `en` or `zh-CN` |
+| `defaultVerbosity` | `"standard"` | Output: `concise`, `standard`, `detailed` |
+| `maxResults` | `5` | Max results returned |
+| `fallbackToEnglish` | `true` | Fall back to English if no results in requested language |
 | `includeOnlineUrl` | `true` | Include `https://docs.openclaw.ai/...` links in detailed output |
