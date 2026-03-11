@@ -18,13 +18,13 @@ clawhub install skilled-openclaw-advisor
 ## Setup (one-time)
 
 ```bash
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/build_index.py
+python3 $SKILL_DIR/scripts/build_index.py
 ```
 
 This builds the FTS5 SQLite index from your local OpenClaw docs. Data is stored in:
 
 ```
-~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/
+~/.openclaw/skills-data/skilled-openclaw-advisor/
 ```
 
 See [SKILLS_DATA_CONVENTION.md](https://github.com/seanford/skilled-openclaw-advisor/blob/main/SKILLS_DATA_CONVENTION.md)
@@ -37,32 +37,32 @@ You can also query it directly:
 
 ```bash
 # Quick agent lookup
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py \
+python3 $SKILL_DIR/scripts/query_index.py \
   --query "how do I configure cron jobs" --mode agent
 
 # Human-readable
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py \
+python3 $SKILL_DIR/scripts/query_index.py \
   --query "telegram channel setup"
 
 # Chinese results
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py \
+python3 $SKILL_DIR/scripts/query_index.py \
   --query "配置频道" --lang zh-CN
 
 # Index status
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --status
+python3 $SKILL_DIR/scripts/query_index.py --status
 
 # What changed in last update
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --diff
+python3 $SKILL_DIR/scripts/query_index.py --diff
 ```
 
 ## Index Management
 
 ```bash
 # Incremental update (checks for doc changes)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/update_index.py
+python3 $SKILL_DIR/scripts/update_index.py
 
 # Force full re-index
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/build_index.py --force
+python3 $SKILL_DIR/scripts/build_index.py --force
 ```
 
 The `update_index.py` script is designed to run nightly (default: 5:30am via cron).

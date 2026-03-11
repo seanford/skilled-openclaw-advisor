@@ -24,9 +24,9 @@ DEFAULTS = {
 # ---------------------------------------------------------------------------
 
 OPENCLAW_JSON_PATH = os.path.expanduser("~/.openclaw/openclaw.json")
-STATE_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/state.json")
-DB_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/index.db")
-DIFFS_DIR = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/diffs")
+STATE_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/state.json")
+DB_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/index.db")
+DIFFS_DIR = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/diffs")
 
 # FTS5 special characters that require quoting
 FTS5_SPECIAL = set(':-*"^')

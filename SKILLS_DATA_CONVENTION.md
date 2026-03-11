@@ -7,7 +7,7 @@ Skills that need persistent local data (databases, indexes, caches, state files)
 the skill folder itself.
 
 ```
-~/.openclaw/workspace-ada/
+~/.openclaw/workspace/
 ├── skills/
 │   └── my-skill/          ← skill CODE lives here (publishable)
 │       ├── SKILL.md
@@ -44,7 +44,7 @@ Separating code from data keeps skill packages small, portable, and publishable.
 ```
 
 Where `{workspace}` is the OpenClaw agent workspace root (typically
-`~/.openclaw/workspace-ada/` or equivalent per-agent path).
+`~/.openclaw/workspace/` or equivalent per-agent path).
 
 ### Script pattern
 
@@ -53,7 +53,7 @@ Skills should resolve the data directory like this:
 ```python
 import os
 
-WORKSPACE = os.path.expanduser("~/.openclaw/workspace-ada")
+WORKSPACE = os.path.expanduser("~/.openclaw/workspace")
 DATA_DIR   = os.path.join(WORKSPACE, "skills-data", "my-skill")
 DB_PATH    = os.path.join(DATA_DIR, "index.db")
 STATE_PATH = os.path.join(DATA_DIR, "state.json")
@@ -65,7 +65,7 @@ Or make it configurable via env var for multi-agent setups:
 
 ```python
 WORKSPACE = os.environ.get("OPENCLAW_WORKSPACE",
-            os.path.expanduser("~/.openclaw/workspace-ada"))
+            os.path.expanduser("~/.openclaw/workspace"))
 DATA_DIR  = os.path.join(WORKSPACE, "skills-data", "my-skill")
 ```
 
@@ -94,7 +94,7 @@ clearly in `SKILL.md`:
 
 Run once after install:
 ```bash
-python3 ~/.openclaw/workspace-ada/skills/my-skill/scripts/build_index.py
+python3 ~/.openclaw/workspace/skills/my-skill/scripts/build_index.py
 ```
 ```
 
@@ -104,7 +104,7 @@ python3 ~/.openclaw/workspace-ada/skills/my-skill/scripts/build_index.py
 
 **`skilled-openclaw-advisor`** is the reference implementation of this convention:
 
-- GitHub: https://github.com/seanford/skilled-openclaw-advisor
+- GitHub: https://clawhub.ai/seanford/skilled-openclaw-advisor
 - ClawHub: https://clawhub.com/seanford/skilled-openclaw-advisor
 - Data dir: `skills-data/skilled-openclaw-advisor/`
 - Scripts: `build_index.py`, `update_index.py`, `query_index.py`

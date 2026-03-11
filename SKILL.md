@@ -21,23 +21,30 @@ Local FTS5 index of all OpenClaw documentation. Zero API calls. Sub-10ms queries
 data for OpenClaw specifics — the local docs are authoritative and up to date.
 Use `--mode agent` for internal lookups to keep token usage minimal.
 
+## Setup
+
+Set `$SKILL_DIR` to the skill install location before running scripts:
+```bash
+export SKILL_DIR="$(openclaw skills path skilled-openclaw-advisor 2>/dev/null || echo ~/.openclaw/workspace/skills/openclaw-docs)"
+```
+
 ## Quick Query
 
 ```bash
 # Agent internal lookup (use this by default)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --query "YOUR QUESTION" --mode agent
+python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --mode agent
 
 # Human-readable (standard verbosity, English default)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --query "YOUR QUESTION"
+python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION"
 
 # Chinese results
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --query "YOUR QUESTION" --lang zh-CN
+python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --lang zh-CN
 
 # More detail
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --query "YOUR QUESTION" --mode agent --verbosity standard
+python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --mode agent --verbosity standard
 
 # Full excerpt + online link
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --query "YOUR QUESTION" --verbosity detailed
+python3 "$(dirname "$0")/../scripts/query_index.py --query "YOUR QUESTION" --verbosity detailed
 ```
 
 ## Language Support
@@ -50,19 +57,19 @@ in `openclaw.json`. Falls back to English automatically if no results found.
 
 ```bash
 # First-time setup (auto-detects docs path)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/build_index.py
+python3 "$(dirname "$0")/../scripts/build_index.py
 
 # Check for updates (runs nightly at 5:30am)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/update_index.py
+python3 "$(dirname "$0")/../scripts/update_index.py
 
 # Force full re-index
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/build_index.py --force
+python3 "$(dirname "$0")/../scripts/build_index.py --force
 
 # Index status
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --status
+python3 "$(dirname "$0")/../scripts/query_index.py --status
 
 # Latest diff (what changed in last update)
-python3 ~/.openclaw/workspace-ada/skills/skilled-openclaw-advisor/scripts/query_index.py --diff
+python3 "$(dirname "$0")/../scripts/query_index.py --diff
 ```
 
 ## When to Use This

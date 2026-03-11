@@ -26,10 +26,10 @@ from datetime import datetime, timezone
 # No separate config.json — all settings live in openclaw.json under:
 #   skills.entries.skilled-openclaw-advisor.config
 OPENCLAW_JSON_PATH = os.path.expanduser("~/.openclaw/openclaw.json")
-STATE_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/state.json")
-DB_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/index.db")
-DIFFS_DIR = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/diffs")
-PREV_DOCS_DIR = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/versions/prev_docs")
+STATE_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/state.json")
+DB_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/index.db")
+DIFFS_DIR = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/diffs")
+PREV_DOCS_DIR = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/versions/prev_docs")
 
 
 # ---------------------------------------------------------------------------

@@ -15,8 +15,8 @@ from datetime import datetime
 # No separate config.json — all settings live in openclaw.json under:
 #   skills.entries.skilled-openclaw-advisor.config
 OPENCLAW_JSON_PATH = os.path.expanduser("~/.openclaw/openclaw.json")
-STATE_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/state.json")
-DB_PATH = os.path.expanduser("~/.openclaw/workspace-ada/skills-data/skilled-openclaw-advisor/index.db")
+STATE_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/state.json")
+DB_PATH = os.path.expanduser("~/.openclaw/skills-data/skilled-openclaw-advisor/index.db")
 
 # ---------------------------------------------------------------------------
 # DEFAULTS — change these to adjust out-of-the-box behaviour.
