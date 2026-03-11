@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Incremental doc updater + diff generator + Telegram notifier.
+Incremental doc updater and diff generator. Optionally sends a notification via the OpenClaw CLI when updates are found (uses local openclaw message command, no direct network calls).
 Scans OpenClaw docs for changes, updates the SQLite index,
-generates version diffs, and sends Telegram notifications.
+generates version diffs, and optionally sends a local OpenClaw notification when changes are detected.
 
 Standalone Python 3, stdlib only.
 """
@@ -328,7 +328,7 @@ def main():
     diff_file = os.path.join(DIFFS_DIR, f"v{current_version}.json")
     save_json(diff_file, diff_data)
 
-    # 6d. Send Telegram notification
+    # 6d. Optionally notify via local OpenClaw CLI (no direct network calls)
     msg = (
         f"\U0001F4DA OpenClaw Docs Updated: v{version_from} \u2192 v{current_version}\n"
         f"\u2705 {len(added)} added | \u270F\uFE0F {len(modified)} modified | \u274C {len(removed)} removed\n"
