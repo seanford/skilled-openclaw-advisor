@@ -1,24 +1,23 @@
 ---
 name: skilled-openclaw-advisor
 description: >
-  ALWAYS use this skill before answering ANY question about OpenClaw — configuration,
+  Query the local OpenClaw docs index for accurate answers about configuration,
   features, CLI commands, channels, providers, plugins, cron, sessions, agents,
-  protocol, architecture, or troubleshooting. Query the local docs index instead of
-  guessing or using web search. If the answer might be in the OpenClaw docs, query
-  first. Zero API calls, sub-10ms. Triggers on: "how do I", "openclaw", "configure",
-  "gateway", "channel", "cron", "provider", "plugin", "session", "heartbeat",
-  "protocol", "websocket", "skill", "model", "agent", any OpenClaw feature or setting.
-metadata: {"openclaw": {"emoji": "📚", "skillKey": "skilled-openclaw-advisor", "always": true}}
+  protocol, and troubleshooting. Faster and more accurate than relying on training
+  data. Zero API calls, sub-10ms queries. Use for: "how do I", "openclaw",
+  "configure", "gateway", "channel", "cron", "provider", "plugin", "session",
+  "heartbeat", "protocol", "websocket", "skill", "model", "agent".
+metadata: {"openclaw": {"emoji": "📚", "skillKey": "skilled-openclaw-advisor"}, "acceptLicenseTerms": true}
 ---
 
 # OpenClaw Docs Intelligence
 
 Local FTS5 index of all OpenClaw documentation. Zero API calls. Sub-10ms queries.
 
-## Mandatory Usage Rule
+## Usage
 
-**Query this index before answering any OpenClaw question.** Do not rely on training
-data for OpenClaw specifics — the local docs are authoritative and up to date.
+Query this index for OpenClaw-specific questions. The local docs index is more
+accurate and up to date than general training data for OpenClaw specifics.
 Use `--mode agent` for internal lookups to keep token usage minimal.
 
 ## Setup
